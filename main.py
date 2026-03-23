@@ -1,7 +1,8 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QLineEdit, QPushButton
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QLineEdit, QPushButton, QMessageBox
 from PyQt6.QtCore import QRegularExpression, Qt
-from PyQt6.QtGui import QRegularExpressionValidator
+from PyQt6.QtGui import QRegularExpressionValidator, QFont
+import mathlib
 
 class OddCalc(QMainWindow):
     def __init__(self):
@@ -53,6 +54,11 @@ class OddCalc(QMainWindow):
 
         self.result_label = QLabel(" ")
         self.result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        res_font = self.result_label.font()
+        res_font.setPointSize(12)
+        res_font.setBold(True)
+
+        self.result_label.setFont(res_font)
         result_row.addWidget(self.result_label)
 
 
@@ -62,8 +68,31 @@ class OddCalc(QMainWindow):
 
 
     def on_calculate_click(self):
-        self.result_label.setText(self.result_label.text()+"\n"+"Ok")
+        if self.x_edit.text() == "" or self.y_edit.text() == "":
+            QMessageBox.critical(None, "Erro", "Preencha todos os campos.")
+            return
 
+
+        result_text = ""
+        results_strings = []
+        result_template = "\\0%: \\1 tentativas"
+        percents = [0.001, 0.01, 0.05, 0.10, 0.25, 0.50, 0.80, 0.90,  0.95, 0.99, 0.9999]
+        x_val = int(self.x_edit.text())
+        y_val = int(self.y_edit.text())
+
+        if x_val <=0 or y_val <=0:
+            QMessageBox.warning(None, "Aviso", "Os vlores não podem ser menor ou igual a zero.")
+
+        for p in percents:
+            tries = mathlib.calc_tries(p, int(self.x_edit.text())/int(self.y_edit.text()))
+
+            r_str = result_template.replace("\\0", str(p*100))
+            r_str = r_str.replace("\\1", str(tries))
+
+            result_text += r_str+"\n"
+
+        
+        self.result_label.setText(result_text)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
