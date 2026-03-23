@@ -5,7 +5,7 @@ def calc_oddies(tries: int, chance: float):
 
 
 def calc_tries(percent: float, chance: float):
-    return round((math.log(1-percent))/(math.log(1-chance)))
+    return math.ceil((math.log(1-percent))/(math.log(1-chance)))
 
 
 if __name__=='__main__':

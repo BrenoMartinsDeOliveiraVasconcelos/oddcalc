@@ -84,7 +84,7 @@ class OddCalc(QMainWindow):
             QMessageBox.warning(None, "Aviso", "Os vlores não podem ser menor ou igual a zero.")
 
         for p in percents:
-            tries = mathlib.calc_tries(p, int(self.x_edit.text())/int(self.y_edit.text()))
+            tries = mathlib.calc_tries(p, x_val, y_val) if x_val != y_val else 1
 
             r_str = result_template.replace("\\0", str(p*100))
             r_str = r_str.replace("\\1", str(tries))
